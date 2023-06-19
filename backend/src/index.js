@@ -26,15 +26,22 @@ app.get("/dados", async (req, res) => {
   let conn;
   try {
     var limit = 200;
+    var factor = 12;
     console.log(req.query.limit);
     if (req.query.limit != undefined && req.query.limit > 0) {
-      if (req.query.limit < 1000) {
+      if (req.query.limit <= 1000) {
         limit = req.query.limit;
+      }
+    }
+
+    if (req.query.factor != undefined && req.query.factor > 0) {
+      if (req.query.factor <= 12) {
+        factor = req.query.factor;
       }
     }
     conn = await pool.getConnection();
     const rows = await conn.query(
-      `SELECT value, date FROM ( SELECT value, date FROM mq2 WHERE id % 12 = 0 ORDER BY id DESC LIMIT ${limit} ) AS subquery ORDER BY date ASC;`
+      `SELECT value, date FROM ( SELECT value, date FROM mq2 WHERE id % 1 = 0 ORDER BY id DESC LIMIT ${limit} ) AS subquery ORDER BY date ASC;`
     );
 
     // Formatar os dados no novo formato
