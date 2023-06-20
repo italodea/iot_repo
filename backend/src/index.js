@@ -41,7 +41,7 @@ app.get("/dados", async (req, res) => {
     }
     conn = await pool.getConnection();
     const rows = await conn.query(
-      `SELECT value, date FROM ( SELECT value, date FROM mq2 WHERE id % 1 = 0 ORDER BY id DESC LIMIT ${limit} ) AS subquery ORDER BY date ASC;`
+      `SELECT value, date FROM ( SELECT value, date FROM mq2 WHERE id % ${factor} = 0 ORDER BY id DESC LIMIT ${limit} ) AS subquery ORDER BY date ASC;`
     );
 
     // Formatar os dados no novo formato
