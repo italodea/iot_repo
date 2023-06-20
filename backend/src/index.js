@@ -35,7 +35,7 @@ app.get("/dados", async (req, res) => {
     }
 
     if (req.query.factor != undefined && req.query.factor > 0) {
-      if (req.query.factor <= 12) {
+      if (req.query.factor <= 50) {
         factor = req.query.factor;
       }
     }
@@ -109,7 +109,7 @@ io.on("connection", (socket) => {
 });
 
 // Inicia o servidor
-server.listen(port, () => {
+server.listen(port,'0.0.0.0', () => {
   console.log(`Servidor rodando na porta ${port}`);
 
   // Inicia a função de atualização dos dados quando o servidor é iniciado
