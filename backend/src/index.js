@@ -1,5 +1,6 @@
 const express = require("express");
 const mariadb = require("mariadb");
+
 require('dotenv/config');
 const cors = require("cors");
 const app = express();
@@ -22,11 +23,11 @@ app.use(
   })
 );
 
-app.get("/dados", async (req, res) => {
+app.get("/dados/mq2", async (req, res) => {
   let conn;
   try {
     var limit = 200;
-    var factor = 12;
+    var factor = 1;
     console.log(req.query.limit);
     if (req.query.limit != undefined && req.query.limit > 0) {
       if (req.query.limit <= 1000) {
@@ -42,6 +43,40 @@ app.get("/dados", async (req, res) => {
     conn = await pool.getConnection();
     const rows = await conn.query(
       `SELECT value, date FROM ( SELECT value, date FROM mq2 WHERE id % ${factor} = 0 ORDER BY id DESC LIMIT ${limit} ) AS subquery ORDER BY date ASC;`
+    );
+
+    // Formatar os dados no novo formato
+    const formattedData = rows.map((row) => [row.value, formatDate(row.date)]);
+
+    res.json(formattedData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Erro ao obter os dados");
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
+app.get("/dados/mq7", async (req, res) => {
+  let conn;
+  try {
+    var limit = 200;
+    var factor = 1;
+    console.log(req.query.limit);
+    if (req.query.limit != undefined && req.query.limit > 0) {
+      if (req.query.limit <= 1000) {
+        limit = req.query.limit;
+      }
+    }
+
+    if (req.query.factor != undefined && req.query.factor > 0) {
+      if (req.query.factor <= 50) {
+        factor = req.query.factor;
+      }
+    }
+    conn = await pool.getConnection();
+    const rows = await conn.query(
+      `SELECT value, date FROM ( SELECT value, date FROM mq7 WHERE id % ${factor} = 0 ORDER BY id DESC LIMIT ${limit} ) AS subquery ORDER BY date ASC;`
     );
 
     // Formatar os dados no novo formato
