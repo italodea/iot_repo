@@ -1,10 +1,35 @@
 const express = require("express");
 const mariadb = require("mariadb");
 
-require('dotenv/config');
+require("dotenv/config");
 const cors = require("cors");
 const app = express();
 const port = 3000;
+
+const accessTokenSecret = `Bearer ${process.env.authorization}`;
+
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1]; // obtém o token do cabeçalho
+
+  if (!token) {
+    return res
+      .status(401)
+      .json({ message: "Token de autenticação não fornecido" });
+  }
+
+  // Aqui você pode implementar a lógica de verificação do token, como verificar se ele é válido, se está na lista negra, etc.
+
+  // Exemplo: verificar se o token é "mysecrettoken"
+  if (token != process.env.authorization) {
+    return res.status(403).json({ message: "Token de autenticação inválido" });
+  }
+
+  next(); // continua para o próximo middleware ou rota
+};
+
+// Midleware para verificar autenticação nas rotas
+app.use(authenticateToken);
 
 // Configurações do banco de dados
 const pool = mariadb.createPool({
@@ -91,6 +116,10 @@ app.get("/dados/mq7", async (req, res) => {
   }
 });
 
+app.use((req, res, next) => {
+  res.status(404).json({ message: "Rota não encontrada" });
+});
+
 // Função para formatar a data
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -144,7 +173,7 @@ io.on("connection", (socket) => {
 });
 
 // Inicia o servidor
-server.listen(port,'0.0.0.0', () => {
+server.listen(port, "0.0.0.0", () => {
   console.log(`Servidor rodando na porta ${port}`);
 
   // Inicia a função de atualização dos dados quando o servidor é iniciado
