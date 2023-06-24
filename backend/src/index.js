@@ -41,7 +41,7 @@ const pool = mariadb.createPool({
 
 app.use(
   cors({
-    origin: "*",
+    origin: ['http://sistema.italodea.online'],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     preflightContinue: false,
     optionsSuccessStatus: 204,
