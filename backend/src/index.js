@@ -34,11 +34,10 @@ app.use(
     origin: ["http://sistema.italodea.online"],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     exposedHeaders: false,
-    preflightContinue: true,
+    preflightContinue: false,
     optionsSuccessStatus: 204,
   })
 );
-
 // Midleware para verificar autenticação nas rotas
 app.use(authenticateToken);
 
