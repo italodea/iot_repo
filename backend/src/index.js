@@ -28,6 +28,17 @@ const authenticateToken = (req, res, next) => {
   next(); // continua para o próximo middleware ou rota
 };
 
+
+app.use(
+  cors({
+    origin: ["http://sistema.italodea.online"],
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    exposedHeaders: false,
+    preflightContinue: true,
+    optionsSuccessStatus: 204,
+  })
+);
+
 // Midleware para verificar autenticação nas rotas
 app.use(authenticateToken);
 
@@ -39,14 +50,7 @@ const pool = mariadb.createPool({
   database: process.env.db_database,
 });
 
-app.use(
-  cors({
-    origin: ['http://sistema.italodea.online'],
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    preflightContinue: true,
-    optionsSuccessStatus: 204,
-  })
-);
+
 
 app.get("/dados/mq2", async (req, res) => {
   let conn;
