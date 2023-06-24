@@ -31,7 +31,7 @@ const authenticateToken = (req, res, next) => {
 
 app.use(
   cors({
-    origin: ["http://sistema.italodea.online"],
+    origin: ["https://sistema.italodea.online"],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     exposedHeaders: false,
     preflightContinue: false,
