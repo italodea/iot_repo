@@ -43,7 +43,7 @@ app.use(
   cors({
     origin: ['http://sistema.italodea.online'],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    preflightContinue: false,
+    preflightContinue: true,
     optionsSuccessStatus: 204,
   })
 );
