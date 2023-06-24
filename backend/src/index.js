@@ -176,7 +176,7 @@ io.on("connection", (socket) => {
 });
 
 // Inicia o servidor
-server.listen(port, "0.0.0.0", () => {
+server.listen(port, "127.0.0.1", () => {
   console.log(`Servidor rodando na porta ${port}`);
 
   // Inicia a função de atualização dos dados quando o servidor é iniciado
